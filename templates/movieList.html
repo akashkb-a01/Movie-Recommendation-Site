@@ -157,7 +157,6 @@ Netflix
                                                
                             {% for movie in popular %}
                             <div class="movie-card">
-                                <a href="{% url 'core:mylist' profile_id=profile.uuid %}">
                                     <div class="card-head">
                                         <img src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" class="flex" alt="" onerror=this.src="{% static 'not_found.jpg' %}" class="img-responsive" style="border-radius: 5px 5px 5px 5px;">
         
@@ -185,7 +184,6 @@ Netflix
                                         <span class="genre">{{movie.genre}}</span>
                                         <span class="year">{{movie.year}}</span>
                                     </div>
-                                </a>
                             </div>
 
                         </div>
@@ -205,7 +203,6 @@ Netflix
                                                
                             {% for movie in top %}
                             <div class="movie-card">
-                                <a href="{% url 'core:mylist' profile_id=profile.uuid %}">
                                     <div class="card-head">
                                         <img src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" class="flex" alt="" onerror=this.src="{% static 'not_found.jpg' %}" class="img-responsive" style="border-radius: 5px 5px 5px 5px;">
         
@@ -233,7 +230,6 @@ Netflix
                                         <span class="genre">{{movie.genre}}</span>
                                         <span class="year">{{movie.year}}</span>
                                     </div>
-                                </a>
                             </div>
 
                         </div>
