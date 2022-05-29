@@ -84,7 +84,9 @@ class Watch(View):
             # movies = sorted(Movie.objects.order_by('-vote_count'), key=lambda a: 'Sci-Fi' in a.genre, reverse=True)
             Genres=['Action','Adventure','Animation','Comedy','Crime','Drama','Family','Fantasy','History','Horror','Music','Mystery','Romance','Sci-Fi','Thriller','War','Western']
             mo = {}
-            recommendations = recommend(profile_id)[0:7]
+            recommendations = recommend(profile_id)
+            if recommendations:
+                recommendations=recommendations[0:7]
             myList=mymovieslist[0:7]
             popularMovies=movies.order_by('-popularity')[0:7]
             topRated=movies.order_by('-vote_average')[0:7]
@@ -290,27 +292,28 @@ def recommend(profile_id):
     #     q=MyRating(user=request.user,movie=movie,rating=0)
     #     q.save()
 
+    if MyRating.objects.all().values().filter(profile=profile):
 
-    userRatings = movie_rating.pivot_table(index=['id','profile_id'],columns=['movie_id'],values='rating')
-    userRatings = userRatings.fillna(0,axis=1)
-    corrMatrix = userRatings.corr(method='pearson')
+        userRatings = movie_rating.pivot_table(index=['id','profile_id'],columns=['movie_id'],values='rating')
+        userRatings = userRatings.fillna(0,axis=1)
+        corrMatrix = userRatings.corr(method='pearson')
 
-    user = pd.DataFrame(list(MyRating.objects.filter(profile=profile).values())).drop(['profile_id','id'],axis=1)
-    user_filtered = [tuple(x) for x in user.values]
-    movie_id_watched = [each[0] for each in user_filtered]
+        user = pd.DataFrame(list(MyRating.objects.filter(profile=profile).values())).drop(['profile_id','id'],axis=1)
+        user_filtered = [tuple(x) for x in user.values]
+        movie_id_watched = [each[0] for each in user_filtered]
 
-    similar_movies = pd.DataFrame()
-    for movie,rating in user_filtered:
-        similar_movies = similar_movies.append(get_similar(movie,rating,corrMatrix),ignore_index = True)
+        similar_movies = pd.DataFrame()
+        for movie,rating in user_filtered:
+            similar_movies = similar_movies.append(get_similar(movie,rating,corrMatrix),ignore_index = True)
 
-    movies_id = list(similar_movies.sum().sort_values(ascending=False).index)
-    movies_id_recommend = [each for each in movies_id if each not in movie_id_watched]
-    preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(movies_id_recommend)])
-    if profile.age_limit == 'Kids':
-        movie_list=list(Movie.objects.filter(adult=False).filter(id__in = movies_id_recommend).order_by(preserved))
-    else:
-        movie_list=list(Movie.objects.filter(id__in = movies_id_recommend).order_by(preserved))
-    return movie_list
+        movies_id = list(similar_movies.sum().sort_values(ascending=False).index)
+        movies_id_recommend = [each for each in movies_id if each not in movie_id_watched]
+        preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(movies_id_recommend)])
+        if profile.age_limit == 'Kids':
+            movie_list=list(Movie.objects.filter(adult=False).filter(id__in = movies_id_recommend).order_by(preserved))
+        else:
+            movie_list=list(Movie.objects.filter(id__in = movies_id_recommend).order_by(preserved))
+        return movie_list
 
 @method_decorator(login_required,name='dispatch')
 class Recommender(View):
