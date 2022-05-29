@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Detail Page
+{% endblock title %}
+
+{% block others %}
+
+<script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+{% endblock others %}
+
+{% block content %}
+
+    {% include 'partials/navbar_loggedin.html' %}
+    <main class='bg-primary_black min-h-screen w-full'>
+        <section class="h-screen relative bg-no-repeat pb-8 pl-6 flex  items-end bg-cover" style="background-image: url('https://image.tmdb.org/t/p/original{{movie.poster_path}}'), url('/../static/not_found_big.jpg');">
+            <div>
+                <h2 class="text-6xl font-semibold text-white my-4">
+                    {{movie.title}} ({{movie.year}})
+                </h2>
+                <h3 class=" w-11/12 md:w-5/12 font-medium text-white my-4">
+                    {{movie.tagline |slice:":50"}}...
+                </h3>
+                <div class="flex my-4">
+                    
+                        <button class="flex items-center bg-white py-2 px-5 rounded-md" style='color:black;'>
+                            <ion-icon name="play" class="text-2xl"></ion-icon>
+                            <span class="ml-3 font-medium">
+                                Play
+                            </span>
+                        </button>
+    
+                    
+                </div>
+            </div>
+        </section> 
+        <section class='bg-primary_black  min-h-screen flex justify-center py-10'>
+            <div class="p-8 w-10/12 relative" >
+                
+                <div class="col-sm-offset-0 col-sm-8">
+                    <form class="form-horizontal" role="search" method="post" action="{% url 'core:show_det' profile_id=profile.uuid movie_id=movie.id %}" onsubmit="return validateForm()"  name="ratingForm">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="row">
+                                    <div class="col-lg-14">
+                                        <div class="star-rating">
+                                            <span>Rate Movie</span>
+                                            <span class="fa fa-star-o" data-rating="1"></span>
+                                            <span class="fa fa-star-o" data-rating="2"></span>
+                                            <span class="fa fa-star-o" data-rating="3"></span>
+                                            <span class="fa fa-star-o" data-rating="4"></span>
+                                            <span class="fa fa-star-o" data-rating="5"></span>
+                                            
+                                            {% if rate_flag %}
+                                                <input type="hidden" name="rating" class="rating-value" value="{{movie_rating}}" >
+                                            {% else %}
+                                                <input type="hidden" name="rating" class="rating-value" value="0">
+                                            {% endif %}
+                                            {% csrf_token %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="submit" class="bg-primary_red py-1 px-3 text-white md:text-lg rounded-md" value="Submit">
+                            </div>
+                        </div>
+                    </form>
+    
+                    <form class="form-horizontal" role="search" method="post" action="{% url 'core:show_det' profile_id=profile.uuid movie_id=movie.id %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="row">
+                                    <div class="col-lg-14">
+                                        <div class="star-rating">
+                                            {% if update %}
+                                            <span><br> Remove from my list </span>
+                                            <input type="checkbox" name="watch" checked>
+                                            <span><br></span>
+                                            <input type="submit" class="bg-primary_red py-1 px-3 text-white md:text-lg rounded-md" value="Remove" name="watch">
+                                            {% else %}
+                                            <span><br> Add to my list </span>
+                                            <input type="checkbox" name="watch">
+                                            <span><br></span>
+                                            <input type="submit" class="bg-primary_red py-1 px-3 text-white md:text-lg rounded-md" value="Add">
+    
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <br><br>
+                <h2 class="text-3xl">
+                    Genre: {{movie.genre}}
+                </h2>
+                <br>
+                <br>
+                <h2 class="text-3xl">
+                    Date Released: {{movie.release_date}}
+                </h2>
+                <br>
+                <br>
+                <h2 class="text-3xl">
+                    Ratings (Vote Average/Vote Count): {{movie.vote_average}}/{{movie.vote_count}}
+                </h2>
+                <br>
+                <br>
+                <h2 class="text-3xl">
+                    Duration: {{movie.runtime}} mins
+                </h2>
+                <br>
+                <br>
+                <h2 class="text-3xl">
+                    Description: {{movie.overview}}
+                </h2>
+                <br>
+                <br>
+                <h2 class="text-3xl">
+                    Director: {{movie.director}}
+                </h2>
+                <br>
+                <br>
+                <h2 class="text-3xl">
+                    Cast: {{movie.cast}}
+                </h2>
+                <br>
+                <br>
+                <h2 class="text-3xl">
+                    Language: {{movie.original_language}}
+                </h2>
+                <br>
+                <br>
+            </div>
+            
+        </section>
+
+        {% if directorlist %}
+                <h2 class="text-6xl font-semibold text-white my-4">
+                    &emsp;&emsp; More {{movie.director}} Movies
+                </h2>
+                <br>
+                <div class="container">
+                    <section class='movies'>
+                        <div class="movies-grid" >
+                                               
+                            {% for movie in directorlist %}
+                            <div class="movie-card">
+                                <a href="{% url 'core:show_det' profile_id=profile.uuid movie_id=movie.id %}">
+                                    <div class="card-head">
+                                        <img src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" class="flex" alt="" onerror=this.src="{% static 'not_found.jpg' %}" class="img-responsive" style="border-radius: 5px 5px 5px 5px;">
+        
+                                            <div class="card-overlay">
+        
+                                                <div class="bookmark">
+                                                <ion-icon name="bookmark-outline"></ion-icon>
+                                                </div>
+                                
+                                                <div class="rating">
+                                                <ion-icon name="star-outline"></ion-icon>
+                                                <span>{{movie.vote_average}}</span>
+                                                </div>
+                                
+                                                <div class="play">
+                                                <ion-icon name="play-circle-outline"></ion-icon>
+                                                </div>
+                                            </div>
+                                    </div>
+                            
+                                    <div class="card-body">
+                                        <h3 class="card-title">{{movie.title}}</h3>
+                        
+                                    <div class="card-info">
+                                        <span class="genre">{{movie.genre}}</span>
+                                        <span class="year">{{movie.year}}</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </section>
+                </div>
+                {% endif %}
+
+        {% for key, values in movies.items %}
+        {% if values %}
+                <a href="{% url 'core:genre_list' profile_id=profile.uuid movie_genre=key %}">
+                <h2 class="text-6xl font-semibold text-white my-4">
+                    &emsp;&emsp; More {{key}} Movies
+                </h2>
+                <br>
+                </a>
+                <div class="container">
+                    <section class='movies'>
+                        <div class="movies-grid" >
+                                               
+                            {% for movie in values %}
+                            <div class="movie-card">
+                                <a href="{% url 'core:show_det' profile_id=profile.uuid movie_id=movie.id %}">
+                                    <div class="card-head">
+                                        <img src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" class="flex" alt="" onerror=this.src="{% static 'not_found.jpg' %}" class="img-responsive" style="border-radius: 5px 5px 5px 5px;">
+        
+                                            <div class="card-overlay">
+        
+                                                <div class="bookmark">
+                                                <ion-icon name="bookmark-outline"></ion-icon>
+                                                </div>
+                                
+                                                <div class="rating">
+                                                <ion-icon name="star-outline"></ion-icon>
+                                                <span>{{movie.vote_average}}</span>
+                                                </div>
+                                
+                                                <div class="play">
+                                                <ion-icon name="play-circle-outline"></ion-icon>
+                                                </div>
+                                            </div>
+                                    </div>
+                            
+                                    <div class="card-body">
+                                        <h3 class="card-title">{{movie.title}}</h3>
+                        
+                                    <div class="card-info">
+                                        <span class="genre">{{movie.genre}}</span>
+                                        <span class="year">{{movie.year}}</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </section>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </section>
+
+        </div>
+        
+    </main>
+    
+{% endblock content %}
+

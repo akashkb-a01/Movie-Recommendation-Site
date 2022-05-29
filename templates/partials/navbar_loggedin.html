@@ -1,0 +1,41 @@
+{% load static %}
+<nav class="flex text-gray-100 justify-between items-center py-3 px-4 fixed w-full z-50">
+        <div class="w-6/12">
+            <a href='/'>
+            
+            <img src="{% static 'netflix.png' %}" alt="logo" class="w-5/12 md:w-2/12">
+            </a>
+        </div>
+
+        {% if AUTH != 'false'  %}
+            {% if request.user.is_authenticated %}
+            <div>
+
+                <!-- <nav class="navbar navbar-inverse navbar-fixed-top " role="navigation" align="center"> -->
+                        
+                <!-- </nav>   -->
+                
+
+                <form class="form-horizontal" role="search" method="get" action=''>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control input-lg " name="q" value="{{ request.GET.q }}" placeholder= "Search Movies "/>
+                            <span class='input-group-btn'>
+                                <button class='bg-primary_red py-1 px-3 text-white md:text-lg rounded-md' type='submit'>Search</button>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <div>
+            <a href="{% url 'account_login' %}">
+
+                <button class='bg-primary_red py-1 px-3 text-white md:text-lg rounded-md'>
+                    Sign In 
+                </button>
+            </a>
+            </div>
+            {% endif %}
+        {% endif %}
+    </nav>

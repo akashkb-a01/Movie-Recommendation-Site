@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Recommendations 
+{% endblock title %}
+
+{% block others %}
+    <script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+{% endblock others %}
+{% block content %}
+    {% include 'partials/navbar_loggedin.html' %}
+    <main class='bg-primary_black min-h-screen w-full'>
+       
+       <br><br>
+                <h2 class="text-6xl font-semibold text-white my-4">
+                    &emsp;&emsp; Recommended Movies
+                </h2>
+                <br>
+                <div class="container">
+                    <section class='movies'>
+                        <div class="movies-grid" >
+                
+                {% if movies %}
+                {% for movie in movies %}
+                <div class="movie-card">
+                    <a href="{% url 'core:show_det' profile_id=profile.uuid movie_id=movie.id %}">
+
+                    <div class="card-head">
+                            <img src="https://image.tmdb.org/t/p/w185{{movie.poster_path}}" class="flex" alt="" onerror=this.src="{% static 'not_found.jpg' %}" class="img-responsive" style="border-radius: 5px 5px 5px 5px;">
+        
+                      <div class="card-overlay">
+        
+                        <div class="bookmark">
+                          <ion-icon name="bookmark-outline"></ion-icon>
+                        </div>
+        
+                        <div class="rating">
+                          <ion-icon name="star-outline"></ion-icon>
+                          <span>{{movie.vote_average}}</span>
+                        </div>
+        
+                        <div class="play">
+                          <ion-icon name="play-circle-outline"></ion-icon>
+                        </div>
+        
+                      </div>
+                    </a>
+
+                    </div>
+        
+                    <div class="card-body">
+                      <h3 class="card-title">{{movie.title}}</h3>
+        
+                      <div class="card-info">
+                        <span class="genre">{{movie.genre}}</span>
+                        <span class="year">{{movie.year}}</span>
+                      </div>
+                    </div>
+        
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+            </div>
+        </section>
+        
+        
+    </main>
+</div>
+
+
+{% endblock content %}
