@@ -98,7 +98,7 @@ After cloning the repo to the machine, follow the follwing steps
 Install the requirements for the project with
 * pip 
     ```sh
-    pip install requirements.txt
+    pip install -r requirements.txt
     ```
 
 After installing the requirements, we are ready to run the website by entering the following command on the terminal
