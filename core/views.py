@@ -27,9 +27,6 @@ class ProfileList(View):
 
         profiles=request.user.profiles.all()
 
-        print(profiles)
-
-
         return render(request,'profileList.html',{
             'profiles':profiles
         })
@@ -49,7 +46,6 @@ class ProfileCreate(View):
 
        
         if form.is_valid():
-            print(form.cleaned_data)
             profile = Profile.objects.create(**form.cleaned_data)
             if profile:
                 request.user.profiles.add(profile)
@@ -66,7 +62,6 @@ class Watch(View):
             profile=Profile.objects.get(uuid=profile_id)
             mylist=MyList.objects.all().filter(profile=profile,watch=True).values('movie_id')
             mymovieslist=Movie.objects.filter(id__in=mylist.values_list('movie_id'))
-            print(mymovieslist)
             if profile.age_limit == 'Kids':
                 movies=Movie.objects.filter(adult=False).order_by('-vote_count')
             else:
